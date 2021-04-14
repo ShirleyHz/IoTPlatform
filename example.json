@@ -1,0 +1,113 @@
+
+{
+  "example":
+  {
+    "State":{
+      "reported":{
+      },
+      "desired":{
+      },
+      "timestamp":0,
+      "version":0
+    }
+  },
+  "空调":
+  {
+    "State":{
+      "reported":{
+        "status": 1 开 0 关,
+        "temperature": 24,
+        "mode": 0 制冷 1 制热  2 除湿
+      },
+      "desired":{
+      },
+      "timestamp":0,
+      "version":0
+    }
+  },
+
+  "灯":
+  {
+    "State":{
+      "reported":{
+        "status": 1 开 0 关
+      },
+      "desired":{
+      },
+      "timestamp":0,
+      "version":0
+    }
+  },
+
+  "温度传感器":
+  {
+    "State":{
+      "reported":{
+        "temperature": 24
+      },
+      "desired":{
+      },
+      "timestamp":0,
+      "version":0
+    }
+  },
+
+  "湿度传感器":
+  {
+    "State":{
+      "reported":{
+        "humidity": 100
+      },
+      "desired":{
+      },
+      "timestamp":0,
+      "version":0
+    }
+  },
+
+  "光传感器":
+  {
+    "State":{
+      "reported":{
+        "luminance": 100
+      },
+      "desired":{
+      },
+      "timestamp":0,
+      "version":0
+    }
+  },
+  "声音传感器":
+  {
+    "State":{
+      "reported":{
+        "db": 100
+      },
+      "desired":{
+      },
+      "timestamp":0,
+      "version":0
+    }
+  },
+  "e":
+  {
+    "State": {
+      "reported":{
+        "status":1,
+        "temperature":24,
+        "mode":0
+      },
+      "desired":{}
+    },
+    "timestamp":0,
+    "version":0
+  }
+}
+
+String s="{\"State\":{\"reported\":"+payload+",\"desired\":{}},\"timestamp\":0,\"version\":0}";
+{"State":{"reported":{"status":0,"temperature": 24,"mode": 0 制冷 1 制热  2 除湿},"desired":{},"timestamp":0,"version":0}}
+{"status":1,"temperature":24,"mode":0}
+
+
+
+
