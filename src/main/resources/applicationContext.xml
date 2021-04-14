@@ -1,0 +1,96 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<beans xmlns="http://www.springframework.org/schema/beans"-->
+<!--       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:amq="http://www.springframework.org/schema/c"-->
+<!--       xmlns:jms="http://www.springframework.org/schema/jms"-->
+<!--       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd">-->
+
+<!--&lt;!&ndash;    <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory"></bean>&ndash;&gt;-->
+
+<!--    &lt;!&ndash; ActiveMQ 连接工厂 &ndash;&gt;-->
+<!--    &lt;!&ndash; 真正可以产生Connection的ConnectionFactory，由对应的 JMS服务厂商提供&ndash;&gt;-->
+<!--    &lt;!&ndash; 如果连接网络：tcp://ip:61616；未连接网络：tcp://localhost:61616 以及用户名，密码&ndash;&gt;-->
+<!--&lt;!&ndash;    <amq:connectionFactory id="amqConnectionFactory"&ndash;&gt;-->
+<!--&lt;!&ndash;                           brokerURL="tcp://192.168.3.3:61616" userName="admin" password="admin"  />&ndash;&gt;-->
+
+<!--&lt;!&ndash;    &lt;!&ndash; Spring Caching连接工厂 &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;    &lt;!&ndash; Spring用于管理真正的ConnectionFactory的ConnectionFactory &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;    <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">&ndash;&gt;-->
+<!--&lt;!&ndash;        &lt;!&ndash; 目标ConnectionFactory对应真实的可以产生JMS Connection的ConnectionFactory &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;        <property name="targetConnectionFactory" ref="amqConnectionFactory"/>&ndash;&gt;-->
+<!--&lt;!&ndash;        &lt;!&ndash; 同上，同理 &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;&lt;!&ndash;         <constructor-arg ref="amqConnectionFactory" /> &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;        &lt;!&ndash; Session缓存数量 &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;        <property name="sessionCacheSize" value="100" />&ndash;&gt;-->
+<!--&lt;!&ndash;    </bean>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    &lt;!&ndash; Spring JmsTemplate 的消息生产者 start&ndash;&gt;&ndash;&gt;-->
+
+<!--&lt;!&ndash;    &lt;!&ndash; 定义JmsTemplate的Queue类型 &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;    <bean id="jmsQueueTemplate" class="org.springframework.jms.core.JmsTemplate">&ndash;&gt;-->
+<!--&lt;!&ndash;        &lt;!&ndash; 这个connectionFactory对应的是我们定义的Spring提供的那个ConnectionFactory对象 &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;        <constructor-arg ref="connectionFactory" />&ndash;&gt;-->
+<!--&lt;!&ndash;        &lt;!&ndash; 非pub/sub模型（发布/订阅），即队列模式 &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;        <property name="pubSubDomain" value="false" />&ndash;&gt;-->
+<!--&lt;!&ndash;    </bean>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    &lt;!&ndash; 定义JmsTemplate的Topic类型 &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;    <bean id="jmsTopicTemplate" class="org.springframework.jms.core.JmsTemplate">&ndash;&gt;-->
+<!--&lt;!&ndash;        &lt;!&ndash; 这个connectionFactory对应的是我们定义的Spring提供的那个ConnectionFactory对象 &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;        <constructor-arg ref="connectionFactory" />&ndash;&gt;-->
+<!--&lt;!&ndash;        &lt;!&ndash; pub/sub模型（发布/订阅） &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;        <property name="pubSubDomain" value="true" />&ndash;&gt;-->
+<!--&lt;!&ndash;    </bean>&ndash;&gt;-->
+
+<!--    &lt;!&ndash;Spring JmsTemplate 的消息生产者 end&ndash;&gt;-->
+
+
+<!--    &lt;!&ndash; 消息消费者 start&ndash;&gt;-->
+<!--&lt;!&ndash;    &lt;!&ndash; 定义Queue监听器 &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;    <jms:listener-container destination-type="queue" container-type="default" connection-factory="connectionFactory" acknowledge="auto">&ndash;&gt;-->
+<!--&lt;!&ndash;        <jms:listener destination="test.queue" ref="queueReceiver1"/>&ndash;&gt;-->
+<!--&lt;!&ndash;        <jms:listener destination="test.queue" ref="queueReceiver2"/>&ndash;&gt;-->
+<!--&lt;!&ndash;    </jms:listener-container>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    &lt;!&ndash; 定义Topic监听器 &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;    <jms:listener-container destination-type="topic" container-type="default" connection-factory="connectionFactory" acknowledge="auto">&ndash;&gt;-->
+<!--&lt;!&ndash;        <jms:listener destination="test.topic" ref="topicReceiver1"/>&ndash;&gt;-->
+<!--&lt;!&ndash;        <jms:listener destination="test.topic" ref="topicReceiver2"/>&ndash;&gt;-->
+<!--&lt;!&ndash;    </jms:listener-container>&ndash;&gt;-->
+
+<!--    &lt;!&ndash; 消息消费者 end &ndash;&gt;-->
+
+
+<!--    &lt;!&ndash;    配置ConnectionFactory&ndash;&gt;-->
+<!--    <bean id="targetConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">-->
+<!--        <property name="brokerURL" value="tcp://192.168.43.179:61616" />-->
+<!--        &lt;!&ndash; 用户名 &ndash;&gt;-->
+<!--        <property name="userName" value="admin"/>-->
+<!--        &lt;!&ndash; 密码 &ndash;&gt;-->
+<!--        <property name="password" value="admin"/>-->
+<!--    </bean>-->
+<!--    &lt;!&ndash;    配置singleConnectionFactory&ndash;&gt;-->
+<!--    <bean id="singleConnectionFactory"-->
+<!--          class="org.springframework.jms.connection.SingleConnectionFactory">-->
+<!--        <property name="targetConnectionFactory" ref="targetConnectionFactory"/>-->
+<!--    </bean>-->
+
+
+<!--&lt;!&ndash;    配置jmsTemplate&ndash;&gt;-->
+<!--    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">-->
+<!--        &lt;!&ndash; 这个connectionFactory对应的是我们定义的Spring提供的那个ConnectionFactory对象 &ndash;&gt;-->
+<!--        <property name="connectionFactory" ref="singleConnectionFactory"/>-->
+<!--    </bean>-->
+<!--&lt;!&ndash;    配置topicDestination&ndash;&gt;-->
+<!--    <bean id="topicDestination" class="org.apache.activemq.command.ActiveMQTopic">-->
+<!--        <constructor-arg value="/sensor/sound"/>-->
+<!--    </bean>-->
+
+<!--    <bean id="consumerSessionAwareMessageListener"-->
+<!--          class="com.example.iotplatform.DeviceManager.Listener.ConsumerSessionAwareMessageListener"/>-->
+
+<!--    <bean id="sessionAwareListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">-->
+<!--        <property name="connectionFactory" ref="singleConnectionFactory" />-->
+<!--        <property name="destination" ref="topicDestination" />-->
+<!--        <property name="messageListener" ref="consumerSessionAwareMessageListener" />-->
+<!--    </bean>-->
+<!--</beans>-->
