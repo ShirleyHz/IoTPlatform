@@ -94,6 +94,7 @@
     <orderEntry type="library" name="Maven: org.fusesource.hawtdispatch:hawtdispatch-transport:1.22" level="project" />
     <orderEntry type="library" name="Maven: org.fusesource.hawtdispatch:hawtdispatch:1.22" level="project" />
     <orderEntry type="library" name="Maven: org.fusesource.hawtbuf:hawtbuf:1.11" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.6.2" level="project" />
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:8.0.23" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-jdbc:2.4.4" level="project" />

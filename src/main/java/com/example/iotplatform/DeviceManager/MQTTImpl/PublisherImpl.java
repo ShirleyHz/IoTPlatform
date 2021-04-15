@@ -14,8 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.iotplatform.DeviceManager.Listener;
+package com.example.iotplatform.DeviceManager.MQTTImpl;
 
+import com.example.iotplatform.DeviceManager.MQTT.Publisher;
 import org.fusesource.hawtbuf.AsciiBuffer;
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.UTF8Buffer;
@@ -23,31 +24,43 @@ import org.fusesource.mqtt.client.Future;
 import org.fusesource.mqtt.client.FutureConnection;
 import org.fusesource.mqtt.client.MQTT;
 import org.fusesource.mqtt.client.QoS;
+import org.springframework.stereotype.Service;
 
+import java.net.URISyntaxException;
 import java.util.LinkedList;
 
 /**
  * Uses a Future based API to MQTT.
  */
-class Publisher {
+@Service
+class PublisherImpl implements Publisher {
+//    public static void main(String[] args) throws Exception {
+//        PublisherImpl publisher=new PublisherImpl();
+//        publisher.publish(1,"{}");
+//    }
 
-    public static void main(String []args) throws Exception {
-
+    @Override
+    public void publish(int deviceId, String payload) throws Exception {
         String user = env("ACTIVEMQ_USER", "admin");
         String password = env("ACTIVEMQ_PASSWORD", "admin");
         String host = env("ACTIVEMQ_HOST", "localhost");
         int port = Integer.parseInt(env("ACTIVEMQ_PORT", "1883"));
-        final String destination = arg(args, 0, "/topic/sensor/sound");
 
-        int messages = 10000;
+        String[] topicStr={"/sensor/sound","/sensor/2","/sensor/3","/sensor/4","/sensor/5","/sensor/6"};
+//        String[] destinations=new String[topicStr.length];
+//        for(int i=0;i<topicStr.length;i++){
+//            destinations[i]=topicStr[i];
+//        }
+
+        int messages = 1;
         int size = 256;
 
-        String DATA = "abcdefghijklmnopqrstuvwxyz";
-        String body = "";
-        for( int i=0; i < size; i ++) {
-            body += DATA.charAt(i%DATA.length());
-        }
-       Buffer msg = new AsciiBuffer(body);
+//        String DATA = "abcdefghijklmnopqrstuvwxyz";
+//        String body = "";
+//        for( int i=0; i < size; i ++) {
+//            body += DATA.charAt(i%DATA.length());
+//        }
+        Buffer msg = new AsciiBuffer(payload);
 
         MQTT mqtt = new MQTT();
         mqtt.setHost(host, port);
@@ -58,12 +71,17 @@ class Publisher {
         connection.connect().await();
 
         final LinkedList<Future<Void>> queue = new LinkedList<Future<Void>>();
+
+        String destination=topicStr[deviceId-1];
         UTF8Buffer topic = new UTF8Buffer(destination);
         for( int i=1; i <= messages; i ++) {
+
+            //publish方法用于发布响应的主题，以便订阅者订阅；onSuccess表示发布成功，onFailure表示发布失败。
 
             // Send the publish without waiting for it to complete. This allows us
             // to send multiple message without blocking..
             queue.add(connection.publish(topic, msg, QoS.AT_LEAST_ONCE, false));
+            System.out.println("publish:"+topic.toString()+msg);
 
             // Eventually we start waiting for old publish futures to complete
             // so that we don't create a large in memory buffer of outgoing message.s
@@ -76,14 +94,14 @@ class Publisher {
             }
         }
 
-        queue.add(connection.publish(topic, new AsciiBuffer("SHUTDOWN"), QoS.AT_LEAST_ONCE, false));
+//        queue.add(connection.publish(topic, new AsciiBuffer("SHUTDOWN"), QoS.AT_LEAST_ONCE, false));
         while( !queue.isEmpty() ) {
             queue.removeFirst().await();
         }
 
         connection.disconnect().await();
 
-        System.exit(0);
+//        System.exit(0);
     }
 
     private static String env(String key, String defaultValue) {

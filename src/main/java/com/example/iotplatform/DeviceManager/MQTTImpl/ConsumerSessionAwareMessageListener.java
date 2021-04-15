@@ -1,4 +1,4 @@
-package com.example.iotplatform.DeviceManager.Listener;
+package com.example.iotplatform.DeviceManager.MQTTImpl;
 
 
 import javax.jms.*;

@@ -86,7 +86,7 @@
 <!--    </bean>-->
 
 <!--    <bean id="consumerSessionAwareMessageListener"-->
-<!--          class="com.example.iotplatform.DeviceManager.Listener.ConsumerSessionAwareMessageListener"/>-->
+<!--          class="com.example.iotplatform.DeviceManager.MQTTImpl.ConsumerSessionAwareMessageListener"/>-->
 
 <!--    <bean id="sessionAwareListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">-->
 <!--        <property name="connectionFactory" ref="singleConnectionFactory" />-->

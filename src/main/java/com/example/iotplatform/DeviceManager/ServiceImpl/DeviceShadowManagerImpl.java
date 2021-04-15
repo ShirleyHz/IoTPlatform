@@ -54,7 +54,8 @@ public class DeviceShadowManagerImpl implements DeviceShadowManager {
                 //控制设备状态
                 connectionCOMM.control(id,desired.toString());
                 state.add("reported",desired);
-                state.addProperty("desired","{}");
+                state.add("desired",parser.parse("{}").getAsJsonObject());
+                System.out.println(state.getAsJsonObject("desired").toString());
                 object.add("State",state);
                 //desire删除
                 deviceShadowDAO.update(id,object.toString());
@@ -88,7 +89,6 @@ public class DeviceShadowManagerImpl implements DeviceShadowManager {
             JsonElement element = parser.parse(json);
             JsonObject object = element.getAsJsonObject();  // 转化为对象
             JsonObject state = object.getAsJsonObject("State");
-
 
             JsonObject reported = state.getAsJsonObject("reported");
             if(!reported.toString().equals(payload)){ //需要更改

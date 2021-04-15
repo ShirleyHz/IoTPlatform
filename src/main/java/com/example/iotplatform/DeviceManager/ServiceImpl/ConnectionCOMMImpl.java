@@ -1,6 +1,7 @@
 package com.example.iotplatform.DeviceManager.ServiceImpl;
 
 import com.example.iotplatform.DeviceManager.DAO.DeviceDAO;
+import com.example.iotplatform.DeviceManager.MQTT.Publisher;
 import com.example.iotplatform.DeviceManager.Service.ConnectionCOMM;
 import com.example.iotplatform.DeviceManager.Service.DeviceShadowManager;
 import com.sun.org.apache.xerces.internal.dom.CommentImpl;
@@ -22,6 +23,8 @@ public class ConnectionCOMMImpl implements ConnectionCOMM {
     ConnectionCOMM connectionCOMM;
     @Autowired
     DeviceShadowManager deviceShadowManager;
+    @Autowired
+    Publisher publisher;
 
     @Override
     public void connect(int id,String payload) {
@@ -47,6 +50,11 @@ public class ConnectionCOMMImpl implements ConnectionCOMM {
     @Override
     public void control(int id,String payload) {
         System.out.println("控制设备"+id+payload);
+        try {
+            publisher.publish(id,payload);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

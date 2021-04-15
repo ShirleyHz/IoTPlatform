@@ -46,6 +46,7 @@ public class DeviceShadowDAOImpl implements DeviceShadowDAO {
 
     @Override
     public void update(int id, String json) {
+        System.out.println("update");
         String sql = "update DeviceShadow set shadow=? where deviceId=?;";
         jdbcTemplate.update(sql,json,id);
     }

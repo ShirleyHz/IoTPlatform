@@ -36,7 +36,7 @@ class ConnectionCOMMTest {
 
     @Test
     void control() {
-
+        connectionCOMM.control(1,"{}");
     }
 
     @Test
