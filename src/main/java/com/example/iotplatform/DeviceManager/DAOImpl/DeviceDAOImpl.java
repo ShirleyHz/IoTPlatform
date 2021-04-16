@@ -31,6 +31,7 @@ public class DeviceDAOImpl implements DeviceDAO {
         String sql = "select * FROM ConnectionStatus where deviceId=?;";
        try {
            jdbcTemplate.queryForObject(sql,new BeanPropertyRowMapper<>(ConnectionStatus.class),deviceId);
+           jdbcTemplate.query(sql,new BeanPropertyRowMapper<>(ConnectionStatus.class),deviceId);
            System.out.println(deviceId+"contain");
            return true;
        }catch (EmptyResultDataAccessException e){

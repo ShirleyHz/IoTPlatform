@@ -42,6 +42,7 @@ import java.net.URISyntaxException;
 @Order(1)
 @Service
 class ListenerImpl implements CommandLineRunner,com.example.iotplatform.DeviceManager.MQTT.Listener{ //CommandLineRunner ,
+//class ListenerImpl implements com.example.iotplatform.DeviceManager.MQTT.Listener{ //CommandLineRunner ,
 
     @Autowired
     ConnectionCOMM connectionCOMM;
@@ -54,11 +55,12 @@ class ListenerImpl implements CommandLineRunner,com.example.iotplatform.DeviceMa
         System.out.println("run");
         String user = env("ACTIVEMQ_USER", "admin");
         String password = env("ACTIVEMQ_PASSWORD", "admin");
-//        String host = env("ACTIVEMQ_HOST", "192.168.43.179");
-        String host = env("ACTIVEMQ_HOST", "localhost");
+        String host = env("ACTIVEMQ_HOST", "192.168.43.179");
+//        String host = env("ACTIVEMQ_HOST", "localhost");
         int port = Integer.parseInt(env("ACTIVEMQ_PORT", "1883"));
 
-        String[] topicStr={"/sensor/sound","/sensor/2","/sensor/3","/sensor/4","/sensor/5","/sensor/6"};
+//        String[] topicStr={"/homeApplication/airConditional","/homeApplication/electricLight","/sensor/temperature","/sensor/humidity","/sensor/light","/sensor/sound"};
+        String[] topicStr={"/sensor/temperature","/sensor/humidity","/sensor/light","/sensor/sound"};
         String[] destinations=new String[topicStr.length];
         for(int i=0;i<topicStr.length;i++){
 //            destinations[i]=arg(args,i,topicStr[i]);
@@ -99,8 +101,10 @@ class ListenerImpl implements CommandLineRunner,com.example.iotplatform.DeviceMa
             public void onPublish(UTF8Buffer topic, Buffer msg, Runnable ack) {
                 //表示监听成功
                 //onPublish表示成功，可以获取到订阅的主题和订阅的内容（UTF8Buffer topicmsg表示订阅的主题, Buffer msg表示订阅的内容），一般的可以在这个方法中获取到订阅的主题和内容然后进行相应的判断和其他业务逻辑操作；
-                System.out.println("监听成功，topic："+topic+" msg:"+msg);
+//                System.out.println("监听成功，topic："+topic+" msg:"+msg);
+//                System.out.println(msg.getClass());
                 String body = msg.utf8().toString();
+//                System.out.println(body.getClass());
                 System.out.println("监听成功，topic："+topic+" body:"+body);
                 if( "SHUTDOWN".equals(body)) {
                     long diff = System.currentTimeMillis() - start;
@@ -122,28 +126,32 @@ class ListenerImpl implements CommandLineRunner,com.example.iotplatform.DeviceMa
                         }
                     });
                 } else {
-//                    JsonParser parser = new JsonParser();
-//                    JsonElement element = parser.parse(body);
-//                    JsonObject object = element.getAsJsonObject();  // 转化为对象
-//                    String method = object.getAsJsonObject("method").getAsString();
-//                    String payload=object.getAsJsonObject("payload").getAsString();
-//                    int deviceId=-1;
-//                    for(int i=0;i<topicStr.length;i++){
-//                        if(topicStr[i].equals(topic.toString())){
-//                            deviceId=i+1;
-//                            break;
-//                        }
-//                    }
-//                    System.out.println("deviceId:"+deviceId);
-//                    if(method.equals("connect")){
-//                        connectionCOMM.connect(deviceId,payload);
-//                    }else if(method.equals("disconnect")){
-//                        connectionCOMM.disconnect(deviceId);
-//                    }else if(method.equals("update")){
-//                        connectionCOMM.update(deviceId,payload);
-//                    }else {
-//                        System.out.println("无法识别的method:"+method);
-//                    }
+                    int deviceId=-1;
+                    for(int i=0;i<topicStr.length;i++){
+                        if(topicStr[i].equals(topic.toString())){
+                            deviceId=i+3;
+                            break;
+                        }
+                    }
+                    System.out.println("deviceId:"+deviceId);
+
+//                    connectionCOMM.update(deviceId,body);
+
+                    JsonParser parser = new JsonParser();
+                    JsonElement element = parser.parse(body);
+                    JsonObject object = element.getAsJsonObject();  // 转化为对象
+                    String method = object.get("method").getAsString();
+                    String payload=object.get("payload").toString();
+
+                    if(method.equals("connect")){
+                        connectionCOMM.connect(deviceId,payload);
+                    }else if(method.equals("disconnect")){
+                        connectionCOMM.disconnect(deviceId);
+                    }else if(method.equals("update")){
+                        connectionCOMM.update(deviceId,payload);
+                    }else {
+                        System.out.println("无法识别的method:"+method);
+                    }
 
                     if( count == 0 ) {
                         start = System.currentTimeMillis();

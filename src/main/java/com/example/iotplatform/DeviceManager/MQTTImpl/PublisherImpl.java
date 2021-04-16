@@ -43,10 +43,12 @@ class PublisherImpl implements Publisher {
     public void publish(int deviceId, String payload) throws Exception {
         String user = env("ACTIVEMQ_USER", "admin");
         String password = env("ACTIVEMQ_PASSWORD", "admin");
-        String host = env("ACTIVEMQ_HOST", "localhost");
+        String host = env("ACTIVEMQ_HOST", "192.168.43.179");
+//        String host = env("ACTIVEMQ_HOST", "localhost");
         int port = Integer.parseInt(env("ACTIVEMQ_PORT", "1883"));
 
-        String[] topicStr={"/sensor/sound","/sensor/2","/sensor/3","/sensor/4","/sensor/5","/sensor/6"};
+//        String[] topicStr={"/homeApplication/airConditional","/homeApplication/electricLight","/sensor/temperature","/sensor/humidity","/sensor/light","/sensor/sound"};
+        String[] topicStr={"/homeApplication/airConditional","/homeApplication/electricLight"};
 //        String[] destinations=new String[topicStr.length];
 //        for(int i=0;i<topicStr.length;i++){
 //            destinations[i]=topicStr[i];

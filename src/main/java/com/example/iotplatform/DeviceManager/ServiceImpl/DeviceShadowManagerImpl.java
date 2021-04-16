@@ -66,11 +66,20 @@ public class DeviceShadowManagerImpl implements DeviceShadowManager {
 //                    JsonObject key = reported.getAsJsonObject(type.getKey());
 //                    JsonObject value=reported.ge
 //                }
+
+//                reported.addProperty("temperature",Integer.parseInt(payload));
+//                state.add("reported",reported);
+//                object.add("State",state);
+//                deviceShadowDAO.update(id,object.toString());
+//                //通知规则引擎
+//                ruleEngineCOMM.notifyRuleEngine(id,payload);
+
                 if(!reported.toString().equals(payload)){ //需要更改
                     state.add ("reported",parser.parse(payload).getAsJsonObject());
                     object.add("State",state);
                     deviceShadowDAO.update(id,object.toString());
                     //通知规则引擎
+                    System.out.println("通知规则引擎");
                     ruleEngineCOMM.notifyRuleEngine(id,payload);
                 }
             }
@@ -91,13 +100,23 @@ public class DeviceShadowManagerImpl implements DeviceShadowManager {
             JsonObject state = object.getAsJsonObject("State");
 
             JsonObject reported = state.getAsJsonObject("reported");
-            if(!reported.toString().equals(payload)){ //需要更改
+            JsonObject payloadObject=parser.parse(payload).getAsJsonObject();
+
+            boolean change=false;
+            for(Map.Entry<String,JsonElement> e:payloadObject.entrySet()){
+                String key=e.getKey();
+                if(!reported.get(key).toString().equals(e.getValue().toString())){
+                    change=true;
+                    reported.add(key,e.getValue());
+                }
+            }
+            if(change){ //需要更改
                 System.out.println("需要control设备");
                 if(connectionCOMM.isConnect(id)){//如果设备处于连接状态 control
-                    connectionCOMM.control(id,payload);
-                    state.add("reported",parser.parse(payload).getAsJsonObject());
+                    connectionCOMM.control(id,reported.toString());
+                    state.add("reported",reported);
                 }else {
-                    state.add("desired",parser.parse(payload).getAsJsonObject());
+                    state.add("desired",reported);
                 }
                 object.add("State",state);
                 deviceShadowDAO.update(id,object.toString());

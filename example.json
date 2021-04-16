@@ -108,6 +108,38 @@ String s="{\"State\":{\"reported\":"+payload+",\"desired\":{}},\"timestamp\":0,\
 {"State":{"reported":{"status":0,"temperature": 24,"mode": 0 制冷 1 制热  2 除湿},"desired":{},"timestamp":0,"version":0}}
 {"status":1,"temperature":24,"mode":0}
 
+{"State":{"reported":{"mode":0,"temperature":24},"desired":{}},"timestamp":0,"version":0}
+mode:0 关闭 1 制冷 2 制热  3 除湿
+
+{"State":{"reported":{"mode":0,"luminance":100},"desired":{}},"timestamp":0,"version":0}
+mode:0 关闭 1 暖光 2 冷光   luminance:int
+
+{"State":{"reported":{"temperature":30},"desired":{},"timestamp":0,"version":0}}
+{"State":{"reported":{"humidity":100}, "desired":{}, "timestamp":0, "version":0}}
+{"State":{"reported":{"luminance": 100},"desired":{}, "timestamp":0, "version":0}},
+
+{"method":"update","payload":{"luminance": 100}},
+{"method":"connect"},
+{"method":"disconnect"},
 
 
+空调 id 1
+{"State":{"reported":{"mode":0,"temperature":24},"desired":{}},"timestamp":0,"version":0}
+mode:0 关闭 1 制冷 2 制热  3 除湿
+
+灯 id 2
+{"State":{"reported":{"mode":0,"luminance":100},"desired":{}},"timestamp":0,"version":0}
+mode:0 关闭 1 暖光 2 冷光   luminance:int
+
+温度传感器 id 3
+{"State":{"reported":{"temperature":30},"desired":{},"timestamp":0,"version":0}}
+
+湿度传感器id4
+{"State":{"reported":{"humidity":100}, "desired":{},"timestamp":0, "version":0}}
+
+光传感器id5
+{"State":{"reported":{"luminance":100},"desired":{},"timestamp":0, "version":0}},
+
+声音传感器id6
+{"State":{"reported":{"db": 100},"desired":{},"timestamp":0,"version":0}}
 
