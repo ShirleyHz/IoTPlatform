@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.time.LocalDateTime;
 
 /**
  * @Author: hyh
@@ -33,5 +34,13 @@ public class RuleRepository {
         return jdbcTemplate.query(sql,new BeanPropertyRowMapper<>(Rule.class));
     }
 
+    public void insert(int salience,LocalDateTime effective_date,LocalDateTime expires_date,boolean enabled,String foreWare,String hindWare) {
+        String sql = "insert into Rule value (null,?,?,?,?,?,?);";
+        jdbcTemplate.update(sql,salience,effective_date,expires_date,enabled,foreWare,hindWare);
+    }
 
+    public void delete(int id) {
+        String sql = "delete from Rule where id = ?;";
+        jdbcTemplate.update(sql,id);
+    }
 }
