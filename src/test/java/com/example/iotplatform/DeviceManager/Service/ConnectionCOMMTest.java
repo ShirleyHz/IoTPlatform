@@ -21,8 +21,8 @@ class ConnectionCOMMTest {
 
     @Test
     void connect() {
-        connectionCOMM.connect(1,"{\"status\":1,\"temperature\":24,\"mode\":1}");
-        connectionCOMM.connect(2,"{\"status\":0}");
+//        connectionCOMM.connect(1,"{\"status\":1,\"temperature\":24,\"mode\":1}");
+//        connectionCOMM.connect(2,"{\"status\":0}");
     }
 
     @Test

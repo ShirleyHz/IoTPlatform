@@ -59,8 +59,8 @@ class ListenerImpl implements CommandLineRunner,com.example.iotplatform.DeviceMa
 //        String host = env("ACTIVEMQ_HOST", "localhost");
         int port = Integer.parseInt(env("ACTIVEMQ_PORT", "1883"));
 
-//        String[] topicStr={"/homeApplication/airConditional","/homeApplication/electricLight","/sensor/temperature","/sensor/humidity","/sensor/light","/sensor/sound"};
-        String[] topicStr={"/sensor/temperature","/sensor/humidity","/sensor/light","/sensor/sound"};
+        String[] topicStr={"/homeApplication/airConditional","/homeApplication/electricLight","/sensor/temperature","/sensor/humidity","/sensor/light","/sensor/sound"};
+//        String[] topicStr={"/sensor/temperature","/sensor/humidity","/sensor/light","/sensor/sound","/homeApplication/airConditional","/homeApplication/electricLight"};
         String[] destinations=new String[topicStr.length];
         for(int i=0;i<topicStr.length;i++){
 //            destinations[i]=arg(args,i,topicStr[i]);
@@ -129,26 +129,31 @@ class ListenerImpl implements CommandLineRunner,com.example.iotplatform.DeviceMa
                     int deviceId=-1;
                     for(int i=0;i<topicStr.length;i++){
                         if(topicStr[i].equals(topic.toString())){
-                            deviceId=i+3;
+                            deviceId=i+1;
+//                            deviceId=i+3;
                             break;
                         }
                     }
                     System.out.println("deviceId:"+deviceId);
-
 //                    connectionCOMM.update(deviceId,body);
 
                     JsonParser parser = new JsonParser();
                     JsonElement element = parser.parse(body);
                     JsonObject object = element.getAsJsonObject();  // 转化为对象
                     String method = object.get("method").getAsString();
-                    String payload=object.get("payload").toString();
 
                     if(method.equals("connect")){
-                        connectionCOMM.connect(deviceId,payload);
+                        connectionCOMM.connect(deviceId);
+                        System.out.println("设备连接");
                     }else if(method.equals("disconnect")){
                         connectionCOMM.disconnect(deviceId);
+                        System.out.println("设备断开连接");
                     }else if(method.equals("update")){
-                        connectionCOMM.update(deviceId,payload);
+                        if(deviceId>2){
+                            String payload=object.get("payload").toString();
+                            connectionCOMM.update(deviceId,payload);
+                            System.out.println("设备状态改变了");
+                        }
                     }else {
                         System.out.println("无法识别的method:"+method);
                     }

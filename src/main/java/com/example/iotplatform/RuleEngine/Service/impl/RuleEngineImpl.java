@@ -132,11 +132,13 @@ public class RuleEngineImpl implements RuleEngine {
                             out.write(now.toString()+'-'+ops[0]+'-'+ops[1]+'-'+String.valueOf(attr)+'\n');
                             out.close();
                         } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
             }   
         }
+        System.out.println(desireMap.size());
         for(Integer id:desireMap.keySet()){
             if(!deviceShadowDAO.contain(id)) continue;
             ruleEngineCOMM.control(id, "{"+desireMap.get(id)+"}");

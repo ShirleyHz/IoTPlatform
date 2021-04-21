@@ -1,9 +1,14 @@
 package com.example.iotplatform.DeviceManager.ServiceImpl;
 
 import com.example.iotplatform.DeviceManager.DAO.DeviceDAO;
+import com.example.iotplatform.DeviceManager.DAO.DeviceShadowDAO;
 import com.example.iotplatform.DeviceManager.MQTT.Publisher;
+import com.example.iotplatform.DeviceManager.PO.DeviceShadow;
 import com.example.iotplatform.DeviceManager.Service.ConnectionCOMM;
 import com.example.iotplatform.DeviceManager.Service.DeviceShadowManager;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.sun.org.apache.xerces.internal.dom.CommentImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -24,17 +29,40 @@ public class ConnectionCOMMImpl implements ConnectionCOMM {
     @Autowired
     DeviceShadowManager deviceShadowManager;
     @Autowired
+    DeviceShadowDAO deviceShadowDAO;
+
+    @Autowired
     Publisher publisher;
 
     @Override
-    public void connect(int id,String payload) {
+    public void connect(int id) {
         if(deviceDAO.contain(id)){
             deviceDAO.modify(id,true);
+            //判断影子文件是否发现有desire，如果有更新设备状态
+            if(deviceShadowDAO.contain(id)){//存在
+                String json=deviceShadowDAO.getJson(id);
+                System.out.println(json);
+                JsonParser parser = new JsonParser();
+                JsonElement element = parser.parse(json);
+                JsonObject object = element.getAsJsonObject();
+                JsonObject state = object.getAsJsonObject("State");
+
+                JsonObject desired = state.getAsJsonObject("desired");
+                System.out.println("desired:" + desired.toString());
+                if (desired.toString().length()!=2){
+                    //控制设备状态
+                    connectionCOMM.control(id,desired.toString());
+                    state.add("reported",desired);
+                    state.add("desired",parser.parse("{}").getAsJsonObject());
+                    System.out.println(state.getAsJsonObject("desired").toString());
+                    object.add("State",state);
+                    //desire删除
+                    deviceShadowDAO.update(id,object.toString());
+                }
+            }
         }else {
             deviceDAO.insert(id);
         }
-        //判断该设备是否需要更新
-        update(id,payload);
     }
 
     @Override
@@ -49,7 +77,7 @@ public class ConnectionCOMMImpl implements ConnectionCOMM {
 
     @Override
     public void control(int id,String payload) {
-        System.out.println("控制设备"+id+payload);
+        System.out.println("==============控制设备"+id+payload);
         try {
             publisher.publish(id,payload);
         } catch (Exception e) {

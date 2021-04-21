@@ -141,5 +141,5 @@ mode:0 关闭 1 暖光 2 冷光   luminance:int
 {"State":{"reported":{"luminance":100},"desired":{},"timestamp":0, "version":0}},
 
 声音传感器id6
-{"State":{"reported":{"db": 100},"desired":{},"timestamp":0,"version":0}}
+{"State":{"reported":{"sound": 100},"desired":{},"timestamp":0,"version":0}}
 

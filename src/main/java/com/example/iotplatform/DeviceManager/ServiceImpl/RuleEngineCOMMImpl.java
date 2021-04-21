@@ -23,6 +23,7 @@ public class RuleEngineCOMMImpl implements RuleEngineCOMM {
 
     @Override
     public void control(int id, String desired) {
+        System.out.println("规则引擎通知设备管理模块"+id+desired);
         deviceShadowManager.control(id,desired);
     }
 

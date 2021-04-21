@@ -32,7 +32,7 @@ public class DeviceShadowManagerImpl implements DeviceShadowManager {
     @Override
     public void update(int id, String payload) { //payload是desire:  {} //连接/状态更新时候用
         //检测该设备影子是否需要更新(不存在需要新建)
-        //先判断影子文件是否发现有desire，如果有更新设备状态
+        //先判断影子文件是否发现有desire，如果有更新设备状态  （改过逻辑后不需要判断，但还是保留了这个判断
         //没有的话判断reported和现在的设备状态是否一样,不同要更新shadow
             //如果需要就更新，并传给规则引擎
             //如果不需要更新，不需要做变化
@@ -46,7 +46,7 @@ public class DeviceShadowManagerImpl implements DeviceShadowManager {
             JsonElement element = parser.parse(json);
             JsonObject object = element.getAsJsonObject();
             JsonObject state = object.getAsJsonObject("State");
-            System.out.println(state.toString());
+//            System.out.println(state.toString());
 
             JsonObject desired = state.getAsJsonObject("desired");
             System.out.println("desired:" + desired.toString());
@@ -91,6 +91,14 @@ public class DeviceShadowManagerImpl implements DeviceShadowManager {
     }
 
     @Override
+    public void create(int id) {
+        //不存在-新建
+        String s="{\"State\":{\"reported\":{},\"desired\":{}},\"timestamp\":0,\"version\":0}";
+        deviceShadowDAO.insert(id,s);
+    }
+
+
+    @Override
     public void control(int id, String payload) { //规则引擎调用 payload:desired {}
         if(deviceShadowDAO.contain(id)){//存在
             String json=deviceShadowDAO.getJson(id);
@@ -100,6 +108,7 @@ public class DeviceShadowManagerImpl implements DeviceShadowManager {
             JsonObject state = object.getAsJsonObject("State");
 
             JsonObject reported = state.getAsJsonObject("reported");
+            JsonObject res=parser.parse(reported.toString()).getAsJsonObject();
             JsonObject payloadObject=parser.parse(payload).getAsJsonObject();
 
             boolean change=false;
@@ -107,16 +116,17 @@ public class DeviceShadowManagerImpl implements DeviceShadowManager {
                 String key=e.getKey();
                 if(!reported.get(key).toString().equals(e.getValue().toString())){
                     change=true;
-                    reported.add(key,e.getValue());
+                    res.add(key,e.getValue());
                 }
             }
             if(change){ //需要更改
                 System.out.println("需要control设备");
                 if(connectionCOMM.isConnect(id)){//如果设备处于连接状态 control
-                    connectionCOMM.control(id,reported.toString());
-                    state.add("reported",reported);
+                    connectionCOMM.control(id,res.toString());
+                    state.add("reported",res);
                 }else {
-                    state.add("desired",reported);
+                    System.out.println("设备未连接，更改设备影子desired");
+                    state.add("desired",res);
                 }
                 object.add("State",state);
                 deviceShadowDAO.update(id,object.toString());

@@ -11,6 +11,9 @@ public interface DeviceShadowManager {
         //如果不需要更新，不需要做变化
     void update(int id,String payload);
 
+    void create(int id);
+
+
     //规则引擎调用
     void control(int id,String payload);
 
